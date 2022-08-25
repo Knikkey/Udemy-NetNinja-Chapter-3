@@ -4,6 +4,7 @@
 //3. An alternative way to export (in Title.js)
 //4. Destructuring props (in Title.js and Modal.js)
 //5. How to use state for conditional rendering
+//6. Form submission and rendering (NewEventForm.js and EventList.js)
 
 import React, { useState } from "react";
 
@@ -11,16 +12,20 @@ import Title from "./component/Title";
 import Modal from "./component/Modal";
 import EventList from "./component/EventList";
 import "./App.css";
+import NewEventForm from "./component/NewEventForm";
 
 function App() {
   const [showModal, setShowModal] = useState(false);
   const [showEvents, setShowEvents] = useState(true);
 
-  const [events, setEvents] = useState([
-    { title: "mario's birthday bash", id: 1 },
-    { title: "bowser's live stream", id: 2 },
-    { title: "race on moo moo farm", id: 3 },
-  ]);
+  const [events, setEvents] = useState([]);
+
+  const addEvent = (event) => {
+    setEvents((prevEvent) => {
+      return [...prevEvent, event];
+    });
+    modalHandler();
+  };
 
   const handleClick = (id) => {
     setEvents((prevEvents) => {
@@ -39,7 +44,7 @@ function App() {
     <div className="App">
       <Title title="Events In Your Area" subtitle={subtitle} />
       <br />
-      <button onClick={modalHandler}>Looking for deals?</button>
+
       {showEvents && (
         <div>
           <button onClick={() => setShowEvents(false)}>Hide events</button>
@@ -56,10 +61,10 @@ function App() {
 
       {showModal ? (
         <Modal onShowModal={modalHandler} isSalesModal={true}>
-          <h2>10% off code!</h2>
-          <p>Use the code NINJA10 at the checkout.</p>
+          <NewEventForm addEvent={addEvent} />
         </Modal>
       ) : null}
+      <button onClick={modalHandler}>Add New Event</button>
     </div>
   );
 }
