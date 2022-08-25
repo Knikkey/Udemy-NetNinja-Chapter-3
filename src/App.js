@@ -1,9 +1,19 @@
-import { useState } from "react";
+//This contains notes on:
+//1. Using functions to handle prevState
+//2. How to add events that need to take an argument.
+//3. An alternative way to export (in Title.js)
+//4. Destructuring props (in Title.js and Modal.js)
+//5. How to use state for conditional rendering
+
+import React, { useState } from "react";
 
 import Title from "./component/Title";
+import Modal from "./component/Modal";
+import EventList from "./component/EventList";
 import "./App.css";
 
 function App() {
+  const [showModal, setShowModal] = useState(false);
   const [showEvents, setShowEvents] = useState(true);
 
   const [events, setEvents] = useState([
@@ -21,10 +31,15 @@ function App() {
 
   const subtitle = "All the latest events!";
 
+  const modalHandler = () => {
+    setShowModal((prevState) => !prevState);
+  };
+
   return (
     <div className="App">
       <Title title="Events In Your Area" subtitle={subtitle} />
-      <Title title="Another title" subtitle="another sub" />
+      <br />
+      <button onClick={modalHandler}>Looking for deals?</button>
       {showEvents && (
         <div>
           <button onClick={() => setShowEvents(false)}>Hide events</button>
@@ -35,17 +50,16 @@ function App() {
           <button onClick={() => setShowEvents(true)}>Show events</button>
         </div>
       )}
-      {showEvents &&
-        events.map((event) => {
-          return (
-            <div key={event.id}>
-              <h2>{event.title}</h2>
-              <button onClick={() => handleClick(event.id)}>
-                Delete event
-              </button>
-            </div>
-          );
-        })}
+      {showEvents && (
+        <EventList events={events} handleClick={handleClick}></EventList>
+      )}
+
+      {showModal ? (
+        <Modal onShowModal={modalHandler} isSalesModal={true}>
+          <h2>10% off code!</h2>
+          <p>Use the code NINJA10 at the checkout.</p>
+        </Modal>
+      ) : null}
     </div>
   );
 }
